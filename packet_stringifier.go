@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 The Pion community <https://pion.ly>
 // SPDX-License-Identifier: MIT
 
+//go:build !js
+
 package rtcp
 
 import (
@@ -48,7 +50,7 @@ func formatField(name string, format string, f any, indent string) string {
 	isPacket := reflect.TypeOf(f).Implements(reflect.TypeFor[Packet]())
 
 	// Resolve pointers to their underlying values
-	if value.Type().Kind() == reflect.Ptr && !value.IsNil() {
+	if value.Type().Kind() == reflect.Pointer && !value.IsNil() {
 		underlying := reflect.Indirect(value)
 		if underlying.IsValid() {
 			value = underlying
@@ -80,7 +82,7 @@ func formatField(name string, format string, f any, indent string) string {
 	case reflect.Slice:
 		childKind := value.Type().Elem().Kind()
 		_, hasStringMethod := value.Type().Elem().MethodByName("String")
-		if hasStringMethod || childKind == reflect.Struct || childKind == reflect.Ptr ||
+		if hasStringMethod || childKind == reflect.Struct || childKind == reflect.Pointer ||
 			childKind == reflect.Interface || childKind == reflect.Slice {
 			out += fmt.Sprintf("%s:\n", name)
 			for i := 0; i < value.Len(); i++ {

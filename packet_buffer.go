@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 The Pion community <https://pion.ly>
 // SPDX-License-Identifier: MIT
 
+//go:build !js
+
 package rtcp
 
 import (
@@ -131,7 +133,7 @@ func (b *packetBuffer) write(v any) error {
 //nolint:gocognit,cyclop
 func (b *packetBuffer) read(v any) error {
 	ptr := reflect.ValueOf(v)
-	if ptr.Kind() != reflect.Ptr {
+	if ptr.Kind() != reflect.Pointer {
 		return errBadReadParameter
 	}
 	value := reflect.Indirect(ptr)
